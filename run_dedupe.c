@@ -54,8 +54,8 @@ static unsigned int leading_spaces;
 
 void print_dupes_table(struct results_tree *res)
 {
-	struct rb_root *root = &res->root;
-	struct rb_node *node = rb_first(root);
+	const struct rb_root *root = &res->root;
+	struct rb_node *node;
 	struct dupe_extents *dext;
 	struct extent *extent;
 
@@ -69,10 +69,7 @@ void print_dupes_table(struct results_tree *res)
 	if (res->num_dupes == 0)
 		return;
 
-	while (1) {
-		if (node == NULL)
-			break;
-
+	for (node = rb_first(root); node; node = rb_next(node)) {
 		dext = rb_entry(node, struct dupe_extents, de_node);
 
 		printf("Showing %u identical extents of length %s with id ",
@@ -85,8 +82,6 @@ void print_dupes_table(struct results_tree *res)
 			       pretty_size(extent->e_loff),
 			       extent->e_file->filename);
 		}
-
-		node = rb_next(node);
 	}
 }
 
