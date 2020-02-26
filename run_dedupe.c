@@ -80,6 +80,9 @@ void print_dupes_table(struct results_tree *res)
 	printf("\nEstimated size to save from deduplication: %s\n\n",
 		pretty_size(saved));
 
+	if (!verbose)
+		return;
+
 	for (node = rb_first(root); node; node = rb_next(node)) {
 		dext = rb_entry(node, struct dupe_extents, de_node);
 
