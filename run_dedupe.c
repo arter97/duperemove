@@ -58,6 +58,7 @@ void print_dupes_table(struct results_tree *res)
 	struct rb_node *node;
 	struct dupe_extents *dext;
 	struct extent *extent;
+	uint64_t saved = 0;
 
 	if (quiet)
 		return;
@@ -68,6 +69,16 @@ void print_dupes_table(struct results_tree *res)
 
 	if (res->num_dupes == 0)
 		return;
+
+	for (node = rb_first(root); node; node = rb_next(node)) {
+		dext = rb_entry(node, struct dupe_extents, de_node);
+		if (dext->de_num_dupes < 1)
+			continue;
+		saved += dext->de_len * (dext->de_num_dupes - 1);
+	}
+
+	printf("\nEstimated size to save from deduplication: %s\n\n",
+		pretty_size(saved));
 
 	for (node = rb_first(root); node; node = rb_next(node)) {
 		dext = rb_entry(node, struct dupe_extents, de_node);
